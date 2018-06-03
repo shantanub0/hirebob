@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .models import UserAccount, JobPost
+from .models import UserAccount, JobPost, JobPostActivity
 from django.shortcuts import redirect
 from django.core import serializers
 
@@ -222,7 +222,34 @@ def applicants_list(request):
 def job_details(request, email, id):
     data = {"header_name": "applicants list",
             'email': request.session["email"],
-            'name': request.session["name"]}
+            'name': request.session["name"],
+            'applied': False}
     job_post_obj = JobPost.objects.filter(post_id=id)
     data["data"] = job_post_obj
+    try:
+        job_activity_obj = JobPostActivity.objects.filter(post_id=id).filter(email=email)
+        if job_activity_obj:
+            data["applied"] = True
+    except Exception as ex:
+        pass
     return render(request, 'pages/job_details.html', data)
+
+
+def apply(request, email, id):
+    data = {"header_name": "applicants list",
+            'email': request.session["email"],
+            'name': request.session["name"]}
+    job_activity_obj = JobPostActivity.objects.create(email=email,
+                                                      post_id=id)
+    if job_activity_obj:
+        link = "http://" + HOST_NAME + ":" + str(HOTS_PORT) + "/portal/job_details/" + email + "/" + id 
+        context = {"job_link": link}
+        message = render_to_string('email_templates/job_applied.html', context)
+
+        send_mail(subject="Applied for job %s " % str(id),
+                  message="",
+                  from_email=settings.EMAIL_HOST_USER,
+                  recipient_list=[email],
+                  html_message=message)
+
+    return redirect('job_details', email, id)

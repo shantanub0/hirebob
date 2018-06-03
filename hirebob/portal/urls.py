@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^applicants-list/', views.applicants_list, name='applicants-list'),
     url(r'^job_details/(?P<email>[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/(?P<id>[\d]+)/', views.job_details,
         name="job_details"),
+    url(r'^apply/(?P<email>[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/(?P<id>[\d]+)/', views.apply, name="apply"),
 
     # applicant user
     url(r'^applicant/', views.applicant, name='applicant'),
