@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+{% include "snippets/header.html" %}
+<body class="theme-deep-orange">
+    <!-- Page Loader -->
+    <!-- {% include "snippets/page_loader.html" %} -->
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Search Bar -->
+    <!-- #END# Search Bar -->
+    <!-- Top Bar -->
+        {% include "snippets/navbar.html" %}
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+            {% include "snippets/sidebar.html"%}
+        <!-- #END# Left Sidebar -->
+        <!-- Right Sidebar -->
+            <!-- {% include "snippets/rightsidebar.html"%} -->
+        <!-- #END# Right Sidebar -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="block-header">
+                <h2>BLANK PAGE</h2>
+            </div>
+        </div>
+    </section>
+
+    {% include "snippets/javascripts.html" %}
+</body>
+
+</html>
