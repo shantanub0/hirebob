@@ -44,7 +44,6 @@
                                     <th class="text-center">job_type</th>
                                     <th class="text-center">job_skills</th>
                                     <th class="text-center">created_date</th>
-                                    <th class="text-center">Action</th>
                                 </tr>
                                 <tbody>
                                     {% for job in data %}
@@ -55,7 +54,6 @@
                                         <td>{{ job.job_type }}</td>
                                         <td>{{ job.job_skills }}</td>
                                         <td>{{ job.created_date }}</td>
-                                        <td>{{ job.is_active }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

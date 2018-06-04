@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserAccount, JobPost
+from .models import UserAccount, JobPost, JobPostActivity
 
 
 class FormUserCreation(forms.ModelForm):
@@ -69,3 +69,49 @@ class FormJobPost(forms.ModelForm):
     class Meta:
         model = JobPost
         fields = ('job_type', 'job_skills', 'job_location', 'posted_by_email', 'job_description', 'job_title')
+
+
+class FormApply(forms.ModelForm):
+    email = forms.EmailField(required=True,
+                             max_length=250,
+                             help_text="Required. Invalid format",
+                             widget=forms.TextInput(attrs={'class': "form-control",
+                                                           'placeholder': 'Enter Email ID',
+                                                           'readonly': True}))
+    to_email = forms.EmailField(required=True,
+                                max_length=250,
+                                help_text="Required. Invalid format",
+                                widget=forms.TextInput(attrs={'class': "form-control",
+                                                              'placeholder': 'Enter Email ID',
+                                                              'readonly': True}))
+    cover_letter = forms.CharField(required=True,
+                                   widget=forms.Textarea(attrs={'class': "form-control",
+                                                                'placeholder': 'Enter Full Name'}))
+
+    post_id = forms.IntegerField(required=True,
+                                 widget=forms.TextInput(attrs={'class': "form-control",
+                                                               'placeholder': 'Post ID',
+                                                               'readonly': True}))
+    job_title = forms.CharField(required=True,
+                                widget=forms.TextInput(attrs={'class': "form-control",
+                                                              'placeholder': 'Enter Full Name'}))
+
+    class Meta:
+        model = JobPostActivity
+        fields = ('email', 'post_id')
+
+
+class FormUploadImage(forms.Form):
+    user_image = forms.ImageField(widget=forms.FileInput())
+
+    class Meta:
+        model = UserAccount
+        fields = ('user_image', )
+
+
+class FormUploadResume(forms.Form):
+    resume = forms.FileField()
+
+    class Meta:
+        model = UserAccount
+        fields = ('resume', )

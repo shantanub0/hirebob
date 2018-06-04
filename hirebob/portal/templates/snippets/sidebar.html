@@ -2,7 +2,11 @@
             <!-- User Info -->
             <div class="user-info">
                 <div class="image">
-                    <img src="/static/images/user.png" width="48" height="48" alt="User" />
+                    {% if profile_img == "" %}
+                        <img src="/static/images/user.png" width="48" height="48" alt="User" />
+                    {% else %}
+                        <img src="{{ profile_img }}" width="48" height="48" alt="User" />
+                    {% endif %}
                 </div>
                 <div class="info-container">
                     <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ name }}</div>
@@ -41,7 +45,7 @@
                     <li>
                         <a href="/portal/applied_jobs/">
                             <i class="material-icons">alarm_add</i>
-                            <span>Jobs Updates</span>
+                            <span>Applied Jobs</span>
                         </a>
                     </li>
 

@@ -17,12 +17,16 @@ urlpatterns = [
     url(r'^org-user/', views.organization, name='org_user'),
     url(r'^post-job/', views.post_job, name='post_job'),
     url(r'^applicants-list/', views.applicants_list, name='applicants-list'),
-    url(r'^job_details/(?P<email>[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/(?P<id>[\d]+)/', views.job_details,
-        name="job_details"),
-    url(r'^apply/(?P<email>[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/(?P<id>[\d]+)/', views.apply, name="apply"),
 
     # applicant user
     url(r'^applicant/', views.applicant, name='applicant'),
     url(r'^show_jobs/', views.show_jobs, name='show_jobs'),
     url(r'^applied_jobs/', views.applied_jobs, name='applied_jobs'),
+    url(r'^job_details/(?P<email>[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/(?P<id>[\d]+)/', views.job_details,
+        name="job_details"),
+    url(r'^apply/', views.apply, name="apply"),
+    url(r'^upload_profile/', views.upload_profile, name="upload_profile"),
+    url(r'^upload_resume/', views.upload_resume, name="upload_resume"),
+    url(r'^download_resume/(?P<email>[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/$',
+        views.download_resume, name="download_resume"),
 ]

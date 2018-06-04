@@ -26,7 +26,47 @@
     <section class="content">
         <div class="container-fluid">
             <div class="block-header">
-                <h2>BLANK PAGE</h2>
+                <h2>Edit Information</h2> : Keep information Updated
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div>
+                                <img src="{{ profile_img }}" width="120" height="120" alt="User" />
+                            </div>
+                        </div>
+                        <form action="/portal/upload_profile/" enctype="multipart/form-data" method="POST" onsubmit="return Validate(this, validImageExtensions);">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="material-icons">person</i>
+                                </span>
+                                <div class="form-line">
+                                    {{ imgform.user_image }}
+                                </div>
+                            </div>
+                            <input class="btn btn-block bg-pink waves-effect" type="submit" value="Upload Image">
+                        </form>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4">
+                        <form action="/portal/upload_resume/" enctype="multipart/form-data" method="POST" id="uploadResume" onsubmit="return Validate(this, validResumeExtensions);">
+
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="material-icons">card_travel</i>
+                                </span>
+                                <div class="form-line">
+                                    {{ resumeform }}
+                                </div>
+                            </div>
+                            <input class="btn btn-block bg-pink waves-effect" type="submit" value="Upload Resume">
+                            <a class="btn btn-block bg-pink waves-effect" href="/portal/download_resume/{{email}}/"> Download Your resume </a>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

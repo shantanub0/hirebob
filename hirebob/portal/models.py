@@ -6,8 +6,11 @@ BASE_DIR = settings.BASE_DIR
 
 # Create your models here.
 def user_directory_path(instance, filename):
-    # file will be uploaded to tempdata/user_email/account.json
-    return BASE_DIR + '/tempdata/{0}/profile_img'.format(instance.email)
+    return "portal/static/profile_images/{0}/{1}".format(instance.email, filename)
+
+
+def user_dir_path(instance, filename):
+    return "portal/static/resumes/{0}/{1}".format(instance.email, filename)
 
 
 class UserType(models.Model):
@@ -26,7 +29,8 @@ class UserAccount(models.Model):
     contact_number = models.IntegerField(default=None, null=True)
     sms_notification_active = models.TextField(max_length=1)
     email_notification_active = models.TextField(max_length=1)
-    user_image = models.FileField(upload_to=user_directory_path)
+    user_image = models.ImageField(upload_to=user_directory_path)
+    resume = models.FileField(upload_to=user_dir_path)
     registration_date = models.DateField(auto_now_add=True)
     activation_code = models.TextField(max_length=50, default=None, null=True)
     account_activated = models.TextField(max_length=10, default=False)
