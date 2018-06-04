@@ -350,12 +350,3 @@ def download_resume(request, email):
     response['Content-Length'] = os.path.getsize(filename)
 
     return response
-    # return HttpResponse(filename)
-    # download_name = "resume"
-    # wrapper = FileWrapper(open(filename))
-    # content_type = mimetypes.guess_type(filename)[0]
-    # response = HttpResponse(wrapper, content_type=content_type)
-    # response['Content-Length'] = os.path.getsize(filename)
-    # response['Content-Disposition'] = "attachment; filename=%s" % download_name
-    
-    # return response
