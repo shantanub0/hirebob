@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+{% include "snippets/header.html" %}
+<body class="theme-deep-orange">
+    <!-- Page Loader -->
+    <!-- {% include "snippets/page_loader.html" %} -->
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Search Bar -->
+    <!-- #END# Search Bar -->
+    <!-- Top Bar -->
+        {% include "snippets/navbar.html" %}
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+        {% if user_type == "1" %}
+            {% include "snippets/sidebar.html"%}
+        {% elif user_type == "2"%}
+            {% include "snippets/sidebar_org.html"%}
+        {% endif%}
+        <!-- #END# Left Sidebar -->
+        <!-- Right Sidebar -->
+            <!-- {% include "snippets/rightsidebar.html"%} -->
+        <!-- #END# Right Sidebar -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+             <div class="col-sm-12 text-center mb-5 wow zoomIn" style="visibility: visible; animation-name: zoomIn;">
+               <h2 class="section-title">
+                 About Me
+               </h2>
+               <span class="background-text">{{ data.user_full_name }}</span>
+             </div>
+            </div> <!-- END row-->
+
+            <div class="row">
+              <div class="col-md-4" style="visibility: visible; animation-name: fadeInLeft;">
+                <img class="animated bounce img-responsive" src="{{ img }}" alt="">
+              </div>
+
+              <div class="col-lg-8 about-me-text pl-lg-5">
+                <p class="lead my-4">
+                  Hello, I’m <strong>{{ data.user_full_name }}</strong>, an independent {{ user_info.job_title }}
+                  professional based in {{ data.user_info }}.
+                </p>
+                <p class="mb-5">
+                  {{ user_info.about_me }}
+                </p>
+                <h4>Personal Information</h4>
+                <ul class="personal-info list-inline clearfix mb-5">
+                  <li><strong>Full Name :</strong> {{ data.user_full_name }}</li>
+                  <li><strong>Birthday :</strong> {{ user_info.birthday }}</li>
+                  <li><strong>Address :</strong> {{ user_info.address }}</li>
+                  <li><strong>Phone :</strong> {{ data.contact_number }}</li>
+                  <li><strong>Email :</strong> {{ data.email }} </li>
+                  <li><strong>Job :</strong> {{ user_info.job_title }} </li>
+                  <li><strong>Skype :</strong> {{ user_info.birthday }}</li>
+                </ul>
+                <a href="/portal/download_resume/{{data.email}}/" class="btn btn-theme btn-active mr-md-3 wow slideInUp" style="visibility: visible; animation-name: slideInUp;">download resume</a>
+                <a href="mailto:{{ data.email }}" class="btn btn-theme wow slideInUp" style="visibility: visible; animation-name: slideInUp;">get in touch now</a>
+              </div> <!-- END col-md-8 about-me-text-->
+            </div> <!-- END row-->
+        </div>
+    </section>
+
+    {% include "snippets/javascripts.html" %}
+</body>
+
+</html>

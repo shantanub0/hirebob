@@ -53,7 +53,7 @@
                                 {% for job in data %}
                                 <tr class="text-center">
                                     <td>{{ job.pk }}</td>
-                                    <td>{{ job.job_title }}</td>
+                                    <td><a href="/portal/job_status/{{ job.pk }}/">{{ job.job_title }}</a></td>
                                     <td>{{ job.job_location }}</td>
                                     <td>{{ job.job_type }}</td>
                                     <td>{{ job.job_skills }}</td>

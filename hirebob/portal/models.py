@@ -58,4 +58,17 @@ class JobPostActivity(models.Model):
     email = models.EmailField(null=False)
     post_id = models.IntegerField(null=False)
     apply_date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=20)
 
+
+class UserProfile(models.Model):
+    email = models.EmailField(unique=True)
+    gender = models.CharField(max_length=10, null=True)
+    gmail = models.EmailField(null=True)
+    linkedin = models.CharField(max_length=30, null=True)
+    skype_id = models.CharField(max_length=30, null=True)
+    about_me = models.CharField(max_length=500, null=True)
+    address = models.CharField(max_length=200, null=True)
+    birthday = models.CharField(max_length=100, null=True)
+    job_title = models.CharField(max_length=20, null=True)
+    location = models.CharField(max_length=20, null=True)

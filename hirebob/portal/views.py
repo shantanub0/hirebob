@@ -3,12 +3,12 @@ import uuid
 import re
 import mimetypes
 from django.shortcuts import render
-from .forms import FormUserCreation, FormLogin, FormJobPost, FormApply, FormUploadImage, FormUploadResume
+from .forms import FormUserCreation, FormLogin, FormJobPost, FormApply, FormUploadImage, FormUploadResume, FormApplicantsInfo
 from django.http import HttpResponse, JsonResponse
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .models import UserAccount, JobPost, JobPostActivity
+from .models import UserAccount, JobPost, JobPostActivity, UserProfile
 from django.shortcuts import redirect
 from wsgiref.util import FileWrapper
 from django.core import serializers
@@ -47,6 +47,7 @@ def sign_in(request, msg="Start your session!"):
         try:
             del request.session['email']
             del request.session['name']
+            del request.session['user_type']
         except Exception as ex:
             pass
         return render(request, 'pages/sign-in.html', data)
@@ -62,7 +63,7 @@ def sign_in(request, msg="Start your session!"):
                     request.session['name'] = user_account_obj.user_full_name
                     img_url = re.sub(r'portal', '', str(user_account_obj.user_image))
                     request.session['profile_img'] = img_url
-
+                    request.session['user_type'] = user_account_obj.user_type
                     if user_account_obj.user_type == "1":
                         return redirect("show_jobs")
                     else:
@@ -84,6 +85,7 @@ def sign_up(request):
     try:
         del request.session['email']
         del request.session['name']
+        del request.session['user_type']
     except Exception as ex:
         pass
     data["form"] = FormUserCreation
@@ -168,7 +170,10 @@ def organization(request):
     data = {"header_name": "Organization Page",
             'email': request.session["email"],
             'name': request.session["name"],
-            'profile_img': request.session["profile_img"]}
+            'profile_img': request.session["profile_img"],
+            'imgform': FormUploadImage,
+            'resumeform': FormUploadResume,
+            'update_info': FormApplicantsInfo(initial={'email': request.session["email"]})}
 
     return render(request, 'pages/profile_org.html', data)
 
@@ -202,15 +207,16 @@ def applicant(request):
             'name': request.session["name"],
             'profile_img': request.session["profile_img"],
             'imgform': FormUploadImage,
-            'resumeform': FormUploadResume}
+            'resumeform': FormUploadResume,
+            'update_info': FormApplicantsInfo(initial={'email': request.session["email"]})}
     try:
         user_acc_obj = UserAccount.objects.get(email=request.session["email"])
         img_url = re.sub(r'portal', '', str(user_acc_obj.user_image))
-        # return HttpResponse(img_url)
         data["img_url"] = img_url
+        if "message" in request.session:
+            data["message"] = request.session["message"]
 
     except Exception as ex:
-
         return redirect('sign_in')
     return render(request, 'pages/profile_applicant.html', data)
 
@@ -314,6 +320,10 @@ def apply(request):
 
 
 def upload_profile(request):
+    if request.session["user_type"] == 1:
+        out = 'applicant'
+    else:
+        out = 'org_user'
     form = FormUploadImage(request.POST,
                            request.FILES)
     if form.is_valid():
@@ -323,9 +333,9 @@ def upload_profile(request):
         img_url = re.sub(r'portal', '', str(user_acc_obj.user_image))
         request.session['profile_img'] = img_url
 
-        return redirect('applicant')
+        return redirect(out)
     else:
-        return redirect('applicant')
+        return redirect(out)
 
 
 def upload_resume(request):
@@ -344,9 +354,112 @@ def download_resume(request, email):
     user_acc_obj = UserAccount.objects.get(email=email)
     filename = str(user_acc_obj.resume)
     donwload_filename = email + "_" + "resume"
-    data = open(filename, "rb").read()
-    response = HttpResponse(data, content_type='application/vnd.ms-word')
-    response['Content-Disposition'] = 'attachment; filename=%s' % donwload_filename
-    response['Content-Length'] = os.path.getsize(filename)
+    try:
+        data = open(filename, "rb").read()
+        response = HttpResponse(data, content_type='application/vnd.ms-word')
+        response['Content-Disposition'] = 'attachment; filename=%s' % donwload_filename
+        response['Content-Length'] = os.path.getsize(filename)
+        return response
+    except Exception as ex:
+        return redirect('applicant')
 
-    return response
+
+def job_status(request, id):
+    data = {"header_name": "applicants list",
+            'email': request.session["email"],
+            'name': request.session["name"],
+            'applied': False,
+            'profile_img': request.session["profile_img"]}
+
+    job_activity = JobPostActivity.objects.filter(post_id=id)
+    data["data"] = job_activity
+
+    return render(request, "pages/job_status.html", data)
+
+
+def user_profile(request, email):
+    data = {"header_name": "applicants list",
+            'email': request.session["email"],
+            'name': request.session["name"],
+            'applied': False,
+            'profile_img': request.session["profile_img"]}
+    try:
+        data['user_type'] = request.session['user_type']
+    except Exception as ex:
+        data['user_type'] = ""
+        pass
+    user_acc_obj = UserAccount.objects.get(email=email)
+    user_profile_obj = UserProfile.objects.get(email=email)
+    data["data"] = user_acc_obj
+    data["user_info"] = user_profile_obj
+    img_url = re.sub(r'portal', '', str(user_acc_obj.user_image))
+    data['img'] = img_url
+
+    return render(request, "pages/user_profile.html", data)
+
+
+def update_info(request):
+    if request.session["user_type"] == 1:
+        out = 'applicant'
+    else:
+        out = 'org_user'
+    gender = request.POST.get("gender")
+    email = request.POST.get("email")
+    gmail = request.POST.get("gmail")
+    linkedin = request.POST.get("linkedin")
+    skype_id = request.POST.get("skype_id")
+    about_me = request.POST.get("about_me")
+    address = request.POST.get("address")
+    birthday = request.POST.get("birthday")
+    job_title = request.POST.get("job_title")
+    location = request.POST.get("location")
+    try:
+        user_profile = UserProfile.objects.get(email=email)
+        user_profile.gmail = gmail
+        user_profile.gender = gender
+        user_profile.linkedin = linkedin
+        user_profile.skype_id = skype_id
+        user_profile.about_me = about_me
+        user_profile.address = address
+        user_profile.birthday = birthday
+        user_profile.job_title = job_title
+        user_profile.location = location
+        user_profile.save()
+        request.session["message"] = "Information Updated"
+        return redirect(out)
+    except Exception as ex:
+        user_profile = UserProfile.objects.create(email=email,
+                                                  gender=gender,
+                                                  gmail=gmail,
+                                                  linkedin=linkedin,
+                                                  skype_id=skype_id,
+                                                  about_me=about_me,
+                                                  address=address,
+                                                  birthday=birthday,
+                                                  job_title=job_title,
+                                                  location=location)
+        request.session["message"] = "Information added"
+        return redirect(out)
+
+
+def update_status(request, email, id, status):
+    try:
+        user_profile = JobPostActivity.objects.filter(email=email).filter(post_id=id).first()
+        user_profile.status = status
+        user_profile.save()
+    except Exception as ex:
+        pass
+
+    context = {
+        "title": "Job Status changed",
+        "status": status,
+        "email": request.session["email"]}
+    message = render_to_string('email_templates/status_change.html', context)
+
+    send_mail(subject="Job status changed to %s " % status,
+              message="",
+              from_email=settings.EMAIL_HOST_USER,
+              recipient_list=[email],
+              html_message=message)
+
+    return redirect('job_status', id)

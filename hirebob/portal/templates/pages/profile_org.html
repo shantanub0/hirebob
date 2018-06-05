@@ -26,7 +26,100 @@
     <section class="content">
         <div class="container-fluid">
             <div class="block-header">
-                <h2>Edit Organization Profile</h2>
+                <h2>Edit Information</h2>
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <span class="title">
+                    <p class="bg-green">{{ message }}</p>
+                </span>
+
+                        <div class="input-group">
+                            <div>
+                                {% if profile_img == "" %}
+                                    <img src="/static/images/user.png" width="120" height="120" alt="User" />
+                                {% else %}
+                                    <img src="{{ profile_img }}" width="120" height="120" alt="User" />
+                                {% endif %}
+
+
+                            </div>
+                        </div>
+                        <form action="/portal/upload_profile/" enctype="multipart/form-data" method="POST" onsubmit="return Validate(this, validImageExtensions);">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="material-icons">person</i>
+                                </span>
+                                <div class="form-line">
+                                    {{ imgform.user_image }}
+                                </div>
+                            </div>
+                            <input class="btn btn-block bg-pink waves-effect" type="submit" value="Upload Image">
+                        </form>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <form action="/portal/update_info/" enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Registerd Email
+                                </span>
+                                <div class="form-line">
+                                    {{update_info.email}}
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    LinkedIn
+                                </span>
+                                <div class="form-line">
+                                    {{update_info.linkedin}}
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Birth date
+                                </span>
+                                <div class="form-line">
+                                    {{update_info.birthday}}
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Location
+                                </span>
+                                <div class="form-line">
+                                    {{update_info.location}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Address
+                                </span>
+                                <div class="form-line">
+                                    {{update_info.address}}
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    About me
+                                </span>
+                                <div class="form-line">
+                                    {{update_info.about_me}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-block bg-green waves-effect" type="submit" value="Upload Resume">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </section>

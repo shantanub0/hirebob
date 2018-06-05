@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserAccount, JobPost, JobPostActivity
+from .models import UserAccount, JobPost, JobPostActivity, UserProfile
 
 
 class FormUserCreation(forms.ModelForm):
@@ -115,3 +115,38 @@ class FormUploadResume(forms.Form):
     class Meta:
         model = UserAccount
         fields = ('resume', )
+
+
+class FormApplicantsInfo(forms.Form):
+    Gender = (('Male', 'Male'), ('Female', 'Female'), ('None', 'None'))
+    gender = forms.ChoiceField(choices=Gender,
+                                     widget=forms.Select(attrs={'class': "form-control"}))
+    email = forms.EmailField(max_length=250,
+                             help_text="Required. Invalid format",
+                             widget=forms.TextInput(attrs={'class': "form-control",
+                                                           'placeholder': 'Enter Email ID',
+                                                           'readonly': True}))
+    gmail = forms.EmailField(max_length=250,
+                             help_text="Required. Invalid format",
+                             widget=forms.TextInput(attrs={'class': "form-control",
+                                                           'placeholder': 'Enter gmail id'}))
+    linkedin = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control",
+                                                             'placeholder': 'Enter Linkedin profile'}))
+    skype_id = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control",
+                                                             'placeholder': 'Enter skype id'}))
+    about_me = forms.CharField(widget=forms.Textarea(attrs={'class': "form-control", 'placeholder': 'Enter About you'}))
+
+    address = forms.CharField(widget=forms.Textarea(attrs={'class': "form-control", 'placeholder': 'Enter your address'}))
+
+    birthday = forms.DateField(widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': 'Enter DOB in DD-MM-YYYY'}))
+
+    job_title = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control",
+                                                              'placeholder': 'Enter Job Title'}))
+    location = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control",
+                                                             'placeholder': 'Enter Your location'}))
+
+
+    class Meta:
+        model = UserProfile
+        fields = ('email', 'gmail', 'linkedin', 'skype_id', 'about_me', 'address', 'birthday', 'job_title',
+                  'location', 'gender')
