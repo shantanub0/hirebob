@@ -162,7 +162,10 @@ def logout(request):
     """
 
     try:
+        del request.session['message']
         del request.session['email']
+        del request.session['name']
+        del request.session['user_type']
     except KeyError:
         pass
     return redirect('sign_in')
