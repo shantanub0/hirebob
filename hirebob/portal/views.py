@@ -391,13 +391,13 @@ def job_status(request, id):
 
 def user_profile(request, email):
     data = {"header_name": "applicants list",
-            'email': request.session["email"],
-            'info_saved': request.session["info_saved"],
-            'name': request.session["name"],
-            'applied': False,
-            'profile_img': request.session["profile_img"]}
+            'applied': False}
     try:
         data['user_type'] = request.session['user_type']
+        data['email'] = request.session['email']
+        data['info_saved'] = request.session["info_saved"]
+        data['name'] = request.session["name"]
+        data['profile_img'] = request.session["profile_img"]
     except Exception as ex:
         data['user_type'] = ""
         pass
