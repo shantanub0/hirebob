@@ -64,7 +64,8 @@ class FormJobPost(forms.ModelForm):
                                        widget=forms.TextInput(attrs={'class': "form-control",
                                                               'placeholder': 'Enter Email ID',
                                                               'readonly': True}))
-    job_description = forms.CharField(widget=forms.Textarea(attrs={'class': "form-control", 'placeholder': 'Enter Full Name'}))
+    job_description = forms.CharField(widget=forms.Textarea(attrs={'class': "form-control",
+                                                                   'placeholder': 'Enter Job Description'}))
 
     class Meta:
         model = JobPost
