@@ -16,7 +16,6 @@ from django.core import serializers
 
 BASE_DIR = settings.BASE_DIR
 HOST_NAME = settings.HOST_NAME
-HOTS_PORT = settings.HOTS_PORT
 
 # Create your views here.
 def template(request):
@@ -107,7 +106,7 @@ def sign_up(request):
                 if result:
                     activation = uuid.uuid4().hex
 
-                    link = "http://" + HOST_NAME + ":" + str(HOTS_PORT) + "/portal/email_activation/" + activation + "/" + email
+                    link = "http://" + HOST_NAME + "/portal/email_activation/" + activation + "/" + email
                     context = {"confirm_link": link}
                     message = render_to_string('email_templates/confirm_email.html', context)
 
@@ -293,7 +292,7 @@ def apply(request):
         email = request.session["email"]
 
         to_email = request.POST.get("to_email")
-        link = "http://" + HOST_NAME + ":" + str(HOTS_PORT) + "/portal/user_profile/" + request.session["email"]
+        link = "http://" + HOST_NAME + "/portal/user_profile/" + request.session["email"]
         org_context = {"job_link": link, "cover_letter": cover_letter, "title": "Application for %s " % job_title}
         applicant_context = {"title": "Application for %s " % job_title,
                              "email": to_email}
