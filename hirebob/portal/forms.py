@@ -86,7 +86,7 @@ class FormApply(forms.ModelForm):
                                                               'readonly': True}))
     cover_letter = forms.CharField(required=True,
                                    widget=forms.Textarea(attrs={'class': "form-control",
-                                                                'placeholder': 'Enter Full Name'}))
+                                                                'placeholder': 'Cover Letter'}))
 
     post_id = forms.IntegerField(required=True,
                                  widget=forms.TextInput(attrs={'class': "form-control",
@@ -94,7 +94,7 @@ class FormApply(forms.ModelForm):
                                                                'readonly': True}))
     job_title = forms.CharField(required=True,
                                 widget=forms.TextInput(attrs={'class': "form-control",
-                                                              'placeholder': 'Enter Full Name'}))
+                                                              'placeholder': 'Enter Job Title'}))
 
     class Meta:
         model = JobPostActivity
