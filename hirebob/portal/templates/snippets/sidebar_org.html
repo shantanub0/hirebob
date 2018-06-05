@@ -36,12 +36,14 @@
                             <span>Organization Info</span>
                         </a>
                     </li>
+                    {% if info_saved == "2" %}
                     <li>
                         <a href="/portal/post-job/">
                             <i class="material-icons">assignment</i>
                             <span>Post Jobs</span>
                         </a>
                     </li>
+                    {% endif %}
                     <!--
                     <li>
                         <a href="/portal/applicants-list/">

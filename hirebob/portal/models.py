@@ -34,6 +34,7 @@ class UserAccount(models.Model):
     registration_date = models.DateField(auto_now_add=True)
     activation_code = models.TextField(max_length=50, default=None, null=True)
     account_activated = models.TextField(max_length=10, default=False)
+    info_saved = models.TextField(max_length=1, default="1")
 
 
 class UserLog(models.Model):

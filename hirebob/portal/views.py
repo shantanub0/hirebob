@@ -17,6 +17,7 @@ from django.core import serializers
 BASE_DIR = settings.BASE_DIR
 HOST_NAME = settings.HOST_NAME
 
+
 # Create your views here.
 def template(request):
     """
@@ -47,6 +48,7 @@ def sign_in(request, msg="Start your session!"):
             del request.session['email']
             del request.session['name']
             del request.session['user_type']
+            del request.session['info_saved']
         except Exception as ex:
             pass
         return render(request, 'pages/sign-in.html', data)
@@ -63,10 +65,11 @@ def sign_in(request, msg="Start your session!"):
                     img_url = re.sub(r'portal', '', str(user_account_obj.user_image))
                     request.session['profile_img'] = img_url
                     request.session['user_type'] = user_account_obj.user_type
+                    request.session['info_saved'] = user_account_obj.info_saved
                     if user_account_obj.user_type == "1":
-                        return redirect("show_jobs")
+                        return redirect("applicant")
                     else:
-                        return redirect("post_job")
+                        return redirect("org_user")
                 else:
                     data["message"] = "Login Failed"
             except Exception as ex:
@@ -170,9 +173,12 @@ def organization(request):
             'email': request.session["email"],
             'name': request.session["name"],
             'profile_img': request.session["profile_img"],
+            'info_saved': request.session["info_saved"],
             'imgform': FormUploadImage,
             'resumeform': FormUploadResume,
             'update_info': FormApplicantsInfo(initial={'email': request.session["email"]})}
+    if "message" in request.session:
+        data["message"] = request.session["message"]
 
     return render(request, 'pages/profile_org.html', data)
 
@@ -180,6 +186,7 @@ def organization(request):
 def post_job(request):
     data = {"header_name": "Post Jobs",
             'email': request.session["email"],
+            'info_saved': request.session["info_saved"],
             'form': FormJobPost(initial={'posted_by_email': request.session["email"]}),
             'name': request.session["name"],
             'profile_img': request.session["profile_img"]}
@@ -204,14 +211,12 @@ def applicant(request):
     data = {"header_name": "Organization Page",
             'email': request.session["email"],
             'name': request.session["name"],
+            'info_saved': request.session["info_saved"],
             'profile_img': request.session["profile_img"],
             'imgform': FormUploadImage,
             'resumeform': FormUploadResume,
             'update_info': FormApplicantsInfo(initial={'email': request.session["email"]})}
     try:
-        user_acc_obj = UserAccount.objects.get(email=request.session["email"])
-        img_url = re.sub(r'portal', '', str(user_acc_obj.user_image))
-        data["img_url"] = img_url
         if "message" in request.session:
             data["message"] = request.session["message"]
 
@@ -223,6 +228,7 @@ def applicant(request):
 def show_jobs(request):
     data = {"header_name": "Organization Page",
             'email': request.session["email"],
+            'info_saved': request.session["info_saved"],
             'name': request.session["name"],
             'profile_img': request.session["profile_img"]}
     if request.method == "GET":
@@ -239,6 +245,7 @@ def show_jobs(request):
 def applied_jobs(request):
     data = {"header_name": "Organization Page",
             'email': request.session["email"],
+            'info_saved': request.session["info_saved"],
             'name': request.session["name"],
             'profile_img': request.session["profile_img"]}
     if request.method == "GET":
@@ -256,6 +263,7 @@ def applied_jobs(request):
 def applicants_list(request):
     data = {"header_name": "applicants list",
             'email': request.session["email"],
+            'info_saved': request.session["info_saved"],
             'name': request.session["name"],
             'profile_img': request.session["profile_img"]}
 
@@ -265,6 +273,7 @@ def applicants_list(request):
 def job_details(request, email, id):
     data = {"header_name": "applicants list",
             'email': request.session["email"],
+            'info_saved': request.session["info_saved"],
             'name': request.session["name"],
             'applied': False,
             'profile_img': request.session["profile_img"]}
@@ -366,6 +375,7 @@ def download_resume(request, email):
 def job_status(request, id):
     data = {"header_name": "applicants list",
             'email': request.session["email"],
+            'info_saved': request.session["info_saved"],
             'name': request.session["name"],
             'applied': False,
             'profile_img': request.session["profile_img"]}
@@ -379,6 +389,7 @@ def job_status(request, id):
 def user_profile(request, email):
     data = {"header_name": "applicants list",
             'email': request.session["email"],
+            'info_saved': request.session["info_saved"],
             'name': request.session["name"],
             'applied': False,
             'profile_img': request.session["profile_img"]}
@@ -387,14 +398,17 @@ def user_profile(request, email):
     except Exception as ex:
         data['user_type'] = ""
         pass
-    user_acc_obj = UserAccount.objects.get(email=email)
-    user_profile_obj = UserProfile.objects.get(email=email)
-    data["data"] = user_acc_obj
-    data["user_info"] = user_profile_obj
-    img_url = re.sub(r'portal', '', str(user_acc_obj.user_image))
-    data['img'] = img_url
+    try:
+        user_acc_obj = UserAccount.objects.get(email=email)
+        user_profile_obj = UserProfile.objects.get(email=email)
+        data["data"] = user_acc_obj
+        data["user_info"] = user_profile_obj
+        img_url = re.sub(r'portal', '', str(user_acc_obj.user_image))
+        data['img'] = img_url
 
-    return render(request, "pages/user_profile.html", data)
+        return render(request, "pages/user_profile.html", data)
+    except Exception as ex:
+        return redirect('sing_in')
 
 
 def update_info(request):
@@ -402,6 +416,7 @@ def update_info(request):
         out = 'applicant'
     else:
         out = 'org_user'
+
     gender = request.POST.get("gender")
     email = request.POST.get("email")
     gmail = request.POST.get("gmail")
@@ -412,6 +427,7 @@ def update_info(request):
     birthday = request.POST.get("birthday")
     job_title = request.POST.get("job_title")
     location = request.POST.get("location")
+    user_acc_obj = UserAccount.objects.get(email=email)
     try:
         user_profile = UserProfile.objects.get(email=email)
         user_profile.gmail = gmail
@@ -425,7 +441,7 @@ def update_info(request):
         user_profile.location = location
         user_profile.save()
         request.session["message"] = "Information Updated"
-        return redirect(out)
+
     except Exception as ex:
         user_profile = UserProfile.objects.create(email=email,
                                                   gender=gender,
@@ -437,7 +453,12 @@ def update_info(request):
                                                   birthday=birthday,
                                                   job_title=job_title,
                                                   location=location)
+
         request.session["message"] = "Information added"
+    finally:
+        user_acc_obj.info_saved = "2"
+        user_acc_obj.save()
+        request.session["info_saved"] = "2"
         return redirect(out)
 
 
