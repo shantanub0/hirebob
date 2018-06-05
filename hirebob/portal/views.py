@@ -319,7 +319,7 @@ def apply(request):
 
 
 def upload_profile(request):
-    if request.session['user_type'] == 1:
+    if request.session['user_type'] == "1":
         out = 'applicant'
     else:
         out = 'org_user'
@@ -398,7 +398,7 @@ def user_profile(request, email):
 
 
 def update_info(request):
-    if request.session['user_type'] == 1:
+    if request.session['user_type'] == "1":
         out = 'applicant'
     else:
         out = 'org_user'
