@@ -60,8 +60,9 @@
                     </div>
                 </div>
                 <br>
-                <div class="row">
+
                     <form action="/portal/update_info/" enctype="multipart/form-data" method="POST">
+                        <div class="row">
                         {% csrf_token %}
                         <div class="col-md-6">
                             <div class="input-group">
@@ -107,11 +108,13 @@
                                 </div>
                             </div>
                         </div>
+                            </div>
+                    <div class="row">
                         <div class="col-md-4">
                             <input class="btn btn-block bg-green waves-effect" type="submit" value="Upload Resume">
                         </div>
+                    </div>
                     </form>
-                </div>
             </div>
         </div>
     </section>
