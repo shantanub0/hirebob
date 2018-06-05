@@ -25,8 +25,8 @@ SECRET_KEY = '*t&elnq0)a#ci2x1db58_a6x5@-daq+plx9_=2#bll(8$xb^sq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-HOST_IP = "127.0.0.1"
-HOST_PORT = ":8000"
+HOST_IP = "13.232.41.94"
+HOST_PORT = ""
 HOST_NAME = HOST_IP + HOST_PORT
 
 ALLOWED_HOSTS = [HOST_IP]
@@ -127,7 +127,7 @@ STATIC_URL = '/static/'
 # for gmail to send verification mail
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "__Your__Gmail__Username__"
-EMAIL_HOST_PASSWORD = "__Your__Gmail__Password__"
+EMAIL_HOST_USER = "gmail_username"
+EMAIL_HOST_PASSWORD = "gmail_password"
 EMAIL_PORT = 587
 
